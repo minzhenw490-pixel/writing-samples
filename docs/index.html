@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>文档样例 · PRD 与 SEO 笔记</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB",sans-serif;
+background:#f7f7f8;color:#1a1a1a;line-height:1.75;font-size:15px}
+.wrap{max-width:820px;margin:0 auto;padding:48px 28px 80px}
+header{border-bottom:2px solid #111;padding-bottom:18px;margin-bottom:32px}
+h1{font-size:26px;margin:0 0 8px;letter-spacing:.3px}.sub{color:#666;font-size:13px}
+.tabs{display:flex;gap:8px;margin:0 0 28px;flex-wrap:wrap}
+.tabs a{display:inline-block;padding:7px 16px;border:1px solid #d5d5d8;border-radius:20px;
+text-decoration:none;color:#333;font-size:13px;background:#fff}
+.tabs a.on{background:#111;color:#fff;border-color:#111}
+section{display:none}section.on{display:block}
+article{background:#fff;border:1px solid #e6e6e8;border-radius:10px;padding:32px 34px}
+h2{font-size:19px;margin:30px 0 10px;padding-bottom:8px;border-bottom:1px solid #eee}
+h3{font-size:16px;margin:22px 0 8px}h4{font-size:14.5px;margin:16px 0 6px}
+p{margin:10px 0}ul,ol{margin:10px 0 10px 22px;padding:0}li{margin:5px 0}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px}
+th,td{border:1px solid #e2e2e5;padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#f4f4f6;font-weight:600}
+blockquote{margin:12px 0;padding:10px 16px;background:#f6f7f9;border-left:3px solid #111;color:#333}
+code{background:#f1f1f3;padding:1px 5px;border-radius:3px;font-size:13px}
+pre{background:#f6f7f9;padding:14px;border-radius:8px;overflow:auto}pre code{background:none}
+hr{border:none;border-top:1px solid #e8e8ea;margin:26px 0}a{color:#0b5fff}
+footer{margin-top:36px;color:#888;font-size:12.5px;text-align:center}
+</style></head><body><div class="wrap">
+<header>
+  <h1>文档样例</h1>
+  <div class="sub">产品需求文档（PRD）· SEO 与增长学习笔记 ｜ 2026</div>
+</header>
+<div class="tabs">
+  <a href="#" class="on" onclick="return show('p', this)">Sentinel PRD</a>
+  <a href="#" onclick="return show('s', this)">SEO 与增长笔记</a>
+</div>
+<section id="p" class="on"><article><h1>📋 PRD — Sentinel for Safe Execution</h1>
+<blockquote><b>版本：</b> Hackathon v1.0 <b>Slogan：</b> Don&#x27;t trade naked. 🛡️ <b>编写：</b> 77</blockquote>
+<hr>
+<h2>1. 产品概述</h2>
+<p><b>一句话定位：</b> 给 DeFi 小白用的交易安全助手</p>
+<p><b>详细版：</b> 一个运行在 Monad Testnet 上的 Execution Safety Layer——用户 Swap 之前，系统向多个候选池子分别报价，评估 Token Risk 与 Pool Risk，输出 ALLOW / REJECT / FALLBACK，并用大白话告诉用户原因。</p>
+<p><b>核心论点：</b> 最佳报价 ≠ 最佳路线。报价最高的路径不一定是最安全的。</p>
+<hr>
+<h2>2. 用户痛点</h2>
+<table><thead><tr><th>痛点</th><th>说明</th></tr></thead><tbody><tr><td>选池难</td><td>不同池子报价不同，新手不知道选哪个</td></tr><tr><td>报价陷阱</td><td>报价高的池子可能有假深度/有毒</td></tr><tr><td>看不懂</td><td>钱包提示全是术语，普通用户看不懂</td></tr><tr><td>事后才知道</td><td>现有工具只在事后报警，不能在交易前拦截</td></tr></tbody></table>
+<hr>
+<h2>3. 核心流程</h2>
+<pre><code>用户输入 Swap
+    ↓
+向多个池子分别报价 → 返回 routes[]（含参考价）
+    ↓
+Token Risk 评估（代币合约/权限/风险标签）
+Pool Risk 评估（流动性/滑点/报价偏离）
+    ↓
+🟢 ALLOW → 放行
+🔴 REJECT → 拦截 + 大白话原因
+🟡 FALLBACK → 自动切安全路径
+    ↓
+交易执行 + 事件记录</code></pre>
+<hr>
+<h2>4. 演示场景</h2>
+<table><thead><tr><th>#</th><th>场景</th><th>决策</th><th>说明</th></tr></thead><tbody><tr><td>1</td><td>USDC → GOOD @ SAFE Pool</td><td>✅ ALLOW</td><td>正常交易，不误伤</td></tr><tr><td>2</td><td>USDC → GOOD @ SHALLOW Pool</td><td>⚠️ 提示</td><td>滑点过高，展示问题</td></tr><tr><td>3</td><td>USDC → GOOD @ TOXIC Pool</td><td>🔴 → 🟡</td><td>报价高但池子有毒，降级</td></tr><tr><td>4</td><td>USDC → BAD @ SAFE Pool</td><td>🔴 REJECT</td><td>池子正常但代币有问题</td></tr></tbody></table>
+<p><b>资产：</b> GOOD / BAD / BAIT（3 个自部署 Token）</p>
+<p><b>池子：</b> SAFE / SHALLOW / TOXIC（3 类 Pool）</p>
+<hr>
+<h2>5. 风险模型</h2>
+<h3>Token Risk</h3>
+<ul><li>合约权限是否异常</li><li>是否有风险标签</li><li>历史交易行为</li></ul>
+<h3>Pool Risk</h3>
+<ul><li>流动性深度</li><li>滑点（priceImpactBps）</li><li>报价偏离参考价</li><li>历史失败率</li></ul>
+<hr>
+<h2>6. 技术架构</h2>
+<pre><code>前端 (React + Vite) → 用户页面
+报价服务 (/quote) → 返回 routes[]
+安全引擎 (/evaluate) → Token Risk + Pool Risk
+执行层 (/execute) → 链上交易
+事件层 (/events) → 时间线
+链上 (Solidity · Monad Testnet)</code></pre>
+<hr>
+<h2>7. MVP 范围</h2>
+<h3>✅ 必须实现</h3>
+<ul><li>多池报价 routes[] + 参考价</li><li>Token Risk + Pool Risk 双层评估</li><li>ALLOW / REJECT / FALLBACK 三种决策</li><li>Safe / Unsafe 对比模式</li><li>交易 X 光弹窗（模拟结果预览）</li><li>事件时间线</li><li>Dashboard + NFT 勋章墙</li></ul>
+<h3>❌ 暂不实现</h3>
+<ul><li>多链支持（只做 Monad）</li><li>复杂 LLM 决策（只用规则引擎）</li><li>真实行情接入（用 mock 数据）</li><li>钱包插件（独立 Web 页面）</li><li>跨链安全评估</li></ul>
+<hr>
+<h2>8. 团队</h2>
+<table><thead><tr><th>角色</th><th>成员</th></tr></thead><tbody><tr><td>🎨 设计</td><td>酷可可</td></tr><tr><td>💻 前端</td><td>Joy</td></tr><tr><td>🔗 Dev A 合约</td><td>Milli</td></tr><tr><td>⚙️ Dev B 风控+池子</td><td>Ni</td></tr><tr><td>🔧 Dev C 报价后端</td><td>MINGHONG</td></tr><tr><td>🔧 Dev D 后端+QA</td><td>Boring</td></tr><tr><td>🧠 Dev E 规则引擎</td><td>Zelll</td></tr><tr><td>📢 运营/PM</td><td>77</td></tr></tbody></table>
+<hr>
+<p>*Hackathon v1.0 · 2026*</p></article></section>
+<section id="s"><article><h1>SEO 与增长基础 · 9.12 增长课完整笔记</h1>
+<blockquote><b>来源</b>：2026-09-12 课程三张截图：拉新与渠道成本 / SEO 站内优化 / 技术 SEO。 本笔记由截图内容整理，非原创观点。 <b>状态</b>：已读课件并整理，<b>尚未在真实站点上练过</b> —— 练习清单见文末。</blockquote>
+<hr>
+<h2>一、SEO 到底是什么</h2>
+<blockquote><b>SEO 的本质：让网页更符合搜索引擎的规则和用户需求，从而获得更高排名和更多自然流量。</b></blockquote>
+<p>要理解 SEO，先要知道搜索引擎怎么工作 —— <b>三步</b>：</p>
+<table><thead><tr><th>步骤</th><th>做什么</th><th>卡住会怎样</th></tr></thead><tbody><tr><td><b>爬取</b></td><td>派出机器人（Spider）到互联网抓取网页</td><td>爬不到 → 内容根本不存在</td></tr><tr><td><b>索引</b></td><td>把抓到的网页整理、分类，存进自己的数据库</td><td>收录不了 → 搜不到</td></tr><tr><td><b>排名</b></td><td>用户搜索时，从库里找出最相关的页面按算法排序</td><td>排名太低 → 看不到</td></tr></tbody></table>
+<p><b>所以：爬不到、收录不了、排名太低，用户就看不到你的内容。</b>SEO 的所有动作都围绕这三步。</p>
+<hr>
+<h2>二、SEO 优化原理（对应上面三步）</h2>
+<table><thead><tr><th>目标</th><th>具体怎么做</th></tr></thead><tbody><tr><td><b>提高爬虫可访问性</b></td><td>确保网站能被顺利抓取：没有死链、没有 403 错误、没有 JS 阻拦</td></tr><tr><td><b>提高收录率</b></td><td>网页内容结构清晰、<b>Meta 信息完整</b>（标题 / 描述 / 关键词）</td></tr><tr><td><b>提高排名</b></td><td>关键词优化、页面体验优化、内容质量提升、外链建设 —— 让搜索引擎觉得你&quot;值得推荐&quot;</td></tr></tbody></table>
+<hr>
+<h2>三、SEO 四大核心原则 ★重点</h2>
+<table><thead><tr><th>原则</th><th>具体含义</th></tr></thead><tbody><tr><td><b>相关性</b></td><td>页面内容必须<b>精准对应搜索意图</b>，围绕关键词展开</td></tr><tr><td><b>权威性</b></td><td>域名权重高、外链质量好；被越多权威网站推荐，越被信任</td></tr><tr><td><b>用户体验</b></td><td>网速快、界面友好、内容易读、广告少、用户停留时间长</td></tr><tr><td><b>技术合规</b></td><td>HTML 结构规范、使用 SSL、适配手机端、Schema 结构化数据正确</td></tr></tbody></table>
+<blockquote>面试时如果能说出「相关性 / 权威性 / 用户体验 / 技术合规」这四条，比背一堆工具名有用得多。</blockquote>
+<hr>
+<h2>四、站内优化（11 项）</h2>
+<table><thead><tr><th>优化项</th><th>具体做法</th></tr></thead><tbody><tr><td>关键词研究</td><td>确定目标关键词、长尾词、布局计划</td></tr><tr><td>标题优化（Title）</td><td>页面标题含关键词，同时要能吸引点击</td></tr><tr><td>描述优化（Meta Description）</td><td>描述包含关键词，诱导用户点击</td></tr><tr><td>URL 优化</td><td>简短、包含关键词、结构清晰</td></tr><tr><td>正文内容优化</td><td>高质量原创内容，<b>合理</b>插入关键词（堆砌会扣分）</td></tr><tr><td>H 标签结构</td><td>用 H1 / H2 / H3 划分清晰的逻辑层次</td></tr><tr><td>内链建设</td><td>页面之间合理互链，增加权重传递</td></tr><tr><td>图片 SEO</td><td>图片加 alt 标签、压缩体积、快速加载</td></tr><tr><td>移动端适配</td><td>响应式设计，适合手机访问</td></tr><tr><td>网站地图（Sitemap）</td><td>生成 XML Sitemap 提交给搜索引擎</td></tr><tr><td>Robots.txt</td><td>合理允许或禁止搜索引擎抓取某些页面</td></tr></tbody></table>
+<hr>
+<h2>五、站外优化（6 项）</h2>
+<table><thead><tr><th>优化项</th><th>具体做法</th></tr></thead><tbody><tr><td>外链建设（Link Building）</td><td>找高权重网站、媒体、论坛做反向链接</td></tr><tr><td>社交媒体推广</td><td>LinkedIn、Twitter、Facebook 等提升曝光</td></tr><tr><td>品牌曝光</td><td>品牌提及（Brand Mention）<b>即使不加链接也加分</b></td></tr><tr><td>内容合作</td><td>Guest Post、联合发布文章、交换资源</td></tr><tr><td>行业目录提交</td><td>提交到相关行业目录站或黄页</td></tr><tr><td>媒体发稿</td><td>新闻稿、行业报道，增加权威背书</td></tr></tbody></table>
+<blockquote>⚠️ <b>课件这里有个笔误</b>：站外优化下面写的还是「主要是网站内部的优化，让页面更容易被爬虫抓取」—— 那是<b>站内</b>的定义。站外的目标是「获得外部推荐与权重传递」。</blockquote>
+<hr>
+<h2>六、技术 SEO（8 项）</h2>
+<table><thead><tr><th>优化项</th><th>具体做法</th></tr></thead><tbody><tr><td>HTTPS 安全协议</td><td>启用 SSL 证书</td></tr><tr><td>网站速度优化</td><td>图片压缩、CDN 加速、减少 JS</td></tr><tr><td>错误页面修复</td><td>404 页面、301 重定向、修复死链</td></tr><tr><td>结构化数据（Schema）</td><td>让搜索引擎更好理解内容（评分、FAQ 等）</td></tr><tr><td>分页处理</td><td><code>rel=&quot;next&quot;</code> / <code>rel=&quot;prev&quot;</code> 正确使用</td></tr><tr><td>国际化 SEO</td><td>多语言站设置 <code>hreflang</code></td></tr><tr><td>Core Web Vitals</td><td>优化 LCP、FID、CLS（Google 排名因子）</td></tr><tr><td>日志分析</td><td>检查爬虫行为，排除抓取问题</td></tr></tbody></table>
+<blockquote>⚠️ <b>一个更新点</b>：课件写的是 LCP / <b>FID</b> / CLS，但 Google 已在 2024 年 3 月用 <b>INP</b> 取代 FID。面试说「LCP / INP / CLS」更准。</blockquote>
+<hr>
+<h2>七、SEO × AI：能做什么</h2>
+<ol><li><b>批量写内容 / 提炼内容</b></li></ol>
+<ul><li>⚠️ 关键提醒：<b>不能纯用 AI 生成</b>，必须加人工编辑 + 润色，否则容易被 Google 判定为机器文。</li></ul>
+<ol><li><b>智能外链建设</b>（最费时的部分，AI 价值最大）</li></ol>
+<ul><li>自动挖掘潜在友链网站列表</li><li>生成个性化的外链 pitch 邮件</li><li>快速撰写 guest post（访客文章）</li><li>效果：外链拓展更快、可规模化</li></ul>
+<hr>
+<h2>八、附：拉新渠道怎么评估（同一节课的另一部分）</h2>
+<p><b>二维判断：客户价值 × 获取成本</b></p>
+<pre><code>            获取成本低
+                 ▲
+                 │      ● 你最理想的渠道
+   高流失 ◀──────┼──────▶ 高留存
+                 │
+            获取成本高</code></pre>
+<ul><li><b>横轴</b>：客户价值（左＝高流失，右＝高留存）</li><li><b>纵轴</b>：获取成本（上＝低，下＝高）</li><li><b>理想渠道 = 右上角</b>：获取成本低 + 用户留存高</li></ul>
+<p><b>用法</b>：渠道不只看&quot;能不能拉来人&quot;，还要看&quot;拉来的人留不留得住、每个用户花多少成本&quot;。只看拉新量不看留存成本，很容易把钱烧在左下方的渠道上。</p>
+<hr>
+<h2>我的练习（待补）</h2>
+<blockquote>做完就写下来，没做就空着，别编。</blockquote>
+<ul><li>[ ] 拿自己做的网站跑一遍基础项：Title / Meta / H1 改写、图片 alt、Sitemap、Robots.txt</li><li>[ ] 记录改前改后的差别（哪怕是本地站，写清改了什么、为什么）</li><li>[ ] 形成一份《站点 SEO 体检表》（能给别人复用的）</li><li>[ ] 用 AI 做一次「选题 → 大纲 → 初稿 → 人工润色」的完整流程，记录人工改了什么</li><li>[ ] 找一个目标关键词，分析它的<b>搜索意图</b>（信息型 / 导航型 / 交易型），列出 3 个竞品页面</li></ul>
+<h2>面试可能被问的 5 个问题</h2>
+<ol><li><b>站内优化你会先动哪几项？</b> → 先定关键词与布局 → Title / Description → H 标签层次 → 内链 → 图片 alt 与体积。</li><li><b>搜索引擎怎么工作？</b> → 爬取 → 索引 → 排名；对应优化是提高可访问性、收录率、排名。</li><li><b>SEO 四大核心原则？</b> → 相关性、权威性、用户体验、技术合规。</li><li><b>Core Web Vitals 是哪三个指标？</b> → LCP / INP / CLS（FID 已被 INP 取代）。</li><li><b>AI 写的内容会被判机器文吗？</b> → 会。批量 AI 生成必须人工编辑润色；AI 更适合调研、大纲、初稿和规模化外链拓展。</li></ol></article></section>
+<footer>Sentinel — AI × Web3 交易安全助手（Monad 黑客松二等奖）· 本页为原始文档的在线阅读版</footer>
+</div><script>function show(id, el){document.querySelectorAll('section').forEach(s=>s.classList.remove('on'));
+document.querySelectorAll('.tabs a').forEach(a=>a.classList.remove('on'));
+document.getElementById(id).classList.add('on'); el.classList.add('on'); return false;}</script></body></html>
