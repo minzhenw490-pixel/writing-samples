@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sentinel · 产品需求文档（PRD）</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB",sans-serif;
+background:#f7f7f8;color:#1a1a1a;line-height:1.75;font-size:15px}
+.wrap{max-width:820px;margin:0 auto;padding:48px 28px 80px}
+header{border-bottom:2px solid #111;padding-bottom:18px;margin-bottom:28px}
+h1{font-size:26px;margin:0 0 8px;letter-spacing:.3px}.sub{color:#666;font-size:13px}
+.back{display:inline-block;margin-bottom:18px;font-size:13px;color:#555;text-decoration:none}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0 26px}
+.card{display:block;background:#fff;border:1px solid #e6e6e8;border-radius:10px;padding:22px 22px 18px;
+text-decoration:none;color:inherit;transition:.15s}
+.card:hover{border-color:#111;transform:translateY(-2px)}
+.card .k{font-size:12px;color:#888;letter-spacing:.5px;text-transform:uppercase}
+.card .t{font-size:17px;font-weight:600;margin:6px 0 6px}
+.card .d{font-size:13px;color:#666;line-height:1.6}
+article{background:#fff;border:1px solid #e6e6e8;border-radius:10px;padding:32px 34px}
+h2{font-size:19px;margin:30px 0 10px;padding-bottom:8px;border-bottom:1px solid #eee}
+h3{font-size:16px;margin:22px 0 8px}h4{font-size:14.5px;margin:16px 0 6px}
+p{margin:10px 0}ul,ol{margin:10px 0 10px 22px;padding:0}li{margin:5px 0}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px}
+th,td{border:1px solid #e2e2e5;padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#f4f4f6;font-weight:600}
+blockquote{margin:12px 0;padding:10px 16px;background:#f6f7f9;border-left:3px solid #111;color:#333}
+code{background:#f1f1f3;padding:1px 5px;border-radius:3px;font-size:13px}
+pre{background:#f6f7f9;padding:14px;border-radius:8px;overflow:auto}pre code{background:none}
+hr{border:none;border-top:1px solid #e8e8ea;margin:26px 0}a{color:#0b5fff}
+footer{margin-top:36px;color:#888;font-size:12.5px;text-align:center}
+@media(max-width:640px){.cards{grid-template-columns:1fr}}
+</style></head><body><div class="wrap">
+<a class="back" href="../">← 返回</a><header><h1>Sentinel · 产品需求文档（PRD）</h1><div class="sub">AI × Web3 交易安全助手 ｜ Hackathon v1.0 ｜ 2026</div></header>
+<article><h1>📋 PRD — Sentinel for Safe Execution</h1>
+<blockquote><b>版本：</b> Hackathon v1.0 <b>Slogan：</b> Don&#x27;t trade naked. 🛡️ <b>编写：</b> 77</blockquote>
+<hr>
+<h2>1. 产品概述</h2>
+<p><b>一句话定位：</b> 给 DeFi 小白用的交易安全助手</p>
+<p><b>详细版：</b> 一个运行在 Monad Testnet 上的 Execution Safety Layer——用户 Swap 之前，系统向多个候选池子分别报价，评估 Token Risk 与 Pool Risk，输出 ALLOW / REJECT / FALLBACK，并用大白话告诉用户原因。</p>
+<p><b>核心论点：</b> 最佳报价 ≠ 最佳路线。报价最高的路径不一定是最安全的。</p>
+<hr>
+<h2>2. 用户痛点</h2>
+<table><thead><tr><th>痛点</th><th>说明</th></tr></thead><tbody><tr><td>选池难</td><td>不同池子报价不同，新手不知道选哪个</td></tr><tr><td>报价陷阱</td><td>报价高的池子可能有假深度/有毒</td></tr><tr><td>看不懂</td><td>钱包提示全是术语，普通用户看不懂</td></tr><tr><td>事后才知道</td><td>现有工具只在事后报警，不能在交易前拦截</td></tr></tbody></table>
+<hr>
+<h2>3. 核心流程</h2>
+<pre><code>用户输入 Swap
+    ↓
+向多个池子分别报价 → 返回 routes[]（含参考价）
+    ↓
+Token Risk 评估（代币合约/权限/风险标签）
+Pool Risk 评估（流动性/滑点/报价偏离）
+    ↓
+🟢 ALLOW → 放行
+🔴 REJECT → 拦截 + 大白话原因
+🟡 FALLBACK → 自动切安全路径
+    ↓
+交易执行 + 事件记录</code></pre>
+<hr>
+<h2>4. 演示场景</h2>
+<table><thead><tr><th>#</th><th>场景</th><th>决策</th><th>说明</th></tr></thead><tbody><tr><td>1</td><td>USDC → GOOD @ SAFE Pool</td><td>✅ ALLOW</td><td>正常交易，不误伤</td></tr><tr><td>2</td><td>USDC → GOOD @ SHALLOW Pool</td><td>⚠️ 提示</td><td>滑点过高，展示问题</td></tr><tr><td>3</td><td>USDC → GOOD @ TOXIC Pool</td><td>🔴 → 🟡</td><td>报价高但池子有毒，降级</td></tr><tr><td>4</td><td>USDC → BAD @ SAFE Pool</td><td>🔴 REJECT</td><td>池子正常但代币有问题</td></tr></tbody></table>
+<p><b>资产：</b> GOOD / BAD / BAIT（3 个自部署 Token）</p>
+<p><b>池子：</b> SAFE / SHALLOW / TOXIC（3 类 Pool）</p>
+<hr>
+<h2>5. 风险模型</h2>
+<h3>Token Risk</h3>
+<ul><li>合约权限是否异常</li><li>是否有风险标签</li><li>历史交易行为</li></ul>
+<h3>Pool Risk</h3>
+<ul><li>流动性深度</li><li>滑点（priceImpactBps）</li><li>报价偏离参考价</li><li>历史失败率</li></ul>
+<hr>
+<h2>6. 技术架构</h2>
+<pre><code>前端 (React + Vite) → 用户页面
+报价服务 (/quote) → 返回 routes[]
+安全引擎 (/evaluate) → Token Risk + Pool Risk
+执行层 (/execute) → 链上交易
+事件层 (/events) → 时间线
+链上 (Solidity · Monad Testnet)</code></pre>
+<hr>
+<h2>7. MVP 范围</h2>
+<h3>✅ 必须实现</h3>
+<ul><li>多池报价 routes[] + 参考价</li><li>Token Risk + Pool Risk 双层评估</li><li>ALLOW / REJECT / FALLBACK 三种决策</li><li>Safe / Unsafe 对比模式</li><li>交易 X 光弹窗（模拟结果预览）</li><li>事件时间线</li><li>Dashboard + NFT 勋章墙</li></ul>
+<h3>❌ 暂不实现</h3>
+<ul><li>多链支持（只做 Monad）</li><li>复杂 LLM 决策（只用规则引擎）</li><li>真实行情接入（用 mock 数据）</li><li>钱包插件（独立 Web 页面）</li><li>跨链安全评估</li></ul>
+<hr>
+<h2>8. 团队</h2>
+<table><thead><tr><th>角色</th><th>成员</th></tr></thead><tbody><tr><td>🎨 设计</td><td>酷可可</td></tr><tr><td>💻 前端</td><td>Joy</td></tr><tr><td>🔗 Dev A 合约</td><td>Milli</td></tr><tr><td>⚙️ Dev B 风控+池子</td><td>Ni</td></tr><tr><td>🔧 Dev C 报价后端</td><td>MINGHONG</td></tr><tr><td>🔧 Dev D 后端+QA</td><td>Boring</td></tr><tr><td>🧠 Dev E 规则引擎</td><td>Zelll</td></tr><tr><td>📢 运营/PM</td><td>77</td></tr></tbody></table>
+<hr>
+<p>*Hackathon v1.0 · 2026*</p></article>
+<footer>Sentinel — AI × Web3 交易安全助手（Monad 黑客松二等奖）· 本页为原始文档的在线阅读版</footer>
+</div></body></html>

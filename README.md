@@ -2,11 +2,9 @@
 
 > 产品需求文档（PRD）与 SEO / 增长学习笔记 ｜ 2026
 
-| 文件 | 说明 |
+| 在线页 | GitHub 原始文件 |
 |---|---|
-| [sentinel-prd.md](sentinel-prd.md) | Sentinel（AI × Web3 交易安全助手）产品需求文档：定位、用户痛点、功能范围、风控逻辑 |
-| [seo-notes.md](seo-notes.md) | SEO 与增长基础笔记：搜索引擎工作原理、SEO 四大原则、站内 11 项、技术 SEO 8 项、拉新渠道评估 |
+| [Sentinel PRD](https://minzhenw490-pixel.github.io/writing-samples/prd/) | [sentinel-prd.md](sentinel-prd.md) |
+| [SEO 与增长笔记](https://minzhenw490-pixel.github.io/writing-samples/seo/) | [seo-notes.md](seo-notes.md) |
 
-在线阅读版：https://minzhenw490-pixel.github.io/writing-samples/
-
-> 说明：文档为真实项目产出与学习整理。SEO 笔记为课程内容整理（非原创观点），已标注尚未在真实站点实操。
+> PRD 为 Sentinel（Monad 黑客松二等奖）参赛文档；SEO 笔记为课程内容整理（非原创观点）。
